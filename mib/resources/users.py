@@ -81,3 +81,14 @@ def delete_user(user_id):
     }
 
     return jsonify(response_object), 202
+
+def get_users_list():
+
+    users = UserManager.retrieve_users_list()
+
+    return (
+        jsonify(users=[user.serialize() for user in users]), 
+        200
+    )
+
+

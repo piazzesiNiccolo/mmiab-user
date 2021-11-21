@@ -29,6 +29,17 @@ paths:
         default:
           description: Error during creation of the user
 
+
+  /users_list:
+    get:
+      tags: [Users]
+      description: Gets the list of all users
+      operationId: mib.resources.users.get_users_list
+      responses:
+        200:
+          description: Return users list
+
+
   /user/{user_id}:
     get:
       tags: [ User ]

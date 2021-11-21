@@ -22,8 +22,8 @@ def create_user():
                                           '%Y-%m-%d')
     user.set_email(email)
     user.set_password(password)
-    user.set_first_name(post_data.get('firstname'))
-    user.set_last_name(post_data.get('lastname'))
+    user.set_first_name(post_data.get('first_name'))
+    user.set_last_name(post_data.get('last_name'))
     user.set_birthday(birthday)
     user.set_phone(post_data.get('phone'))
     UserManager.create_user(user)
@@ -86,19 +86,23 @@ def get_users_list():
     key_word = request.args.get('q',default=None)
 
     users = UserManager.retrieve_users_list()
+
     filter_users = lambda elem: (
-            key_word in elem.firstname
-            or key_word in elem.lastname
+            key_word in elem.first_name
+            or key_word in elem.last_name
             or key_word in elem.email
             or key_word in elem.phone
             or (elem.nickname and key_word in elem.nickname)
             or (elem.location and key_word in elem.location)
             
         )
-    users = list(filter(filter_users, users))
-    return (
-        jsonify(users=[user.serialize() for user in users]), 
-        200
-    )
+    filtered_users = list(filter(filter_users, users))
+    filtered_users = filtered_users if len(filtered_users) > 0 else users
+
+    response_object = {
+        'status': 'success',
+        'users': [user.serialize() for user in users],
+    }
+    return jsonify(response_object), 200 
 
 

@@ -83,9 +83,19 @@ def delete_user(user_id):
     return jsonify(response_object), 202
 
 def get_users_list():
+    key_word = request.args.get('q',default=None)
 
     users = UserManager.retrieve_users_list()
-
+    filter_users = lambda elem: (
+            key_word in elem.firstname
+            or key_word in elem.lastname
+            or key_word in elem.email
+            or key_word in elem.phone
+            or (elem.nickname and key_word in elem.nickname)
+            or (elem.location and key_word in elem.location)
+            
+        )
+    users = list(filter(filter_users, users))
     return (
         jsonify(users=[user.serialize() for user in users]), 
         200

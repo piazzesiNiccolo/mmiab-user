@@ -33,6 +33,12 @@ paths:
   /users_list:
     get:
       tags: [Users]
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: search users with the keyword specified
       description: Gets the list of all users
       operationId: mib.resources.users.get_users_list
       responses:

@@ -1,6 +1,7 @@
 from mib.dao.manager import Manager
 from mib.models.user import User
 
+from typing import List
 
 class UserManager(Manager):
 
@@ -35,3 +36,7 @@ class UserManager(Manager):
     def delete_user_by_id(id_: int):
         user = UserManager.retrieve_by_id(id_)
         UserManager.delete_user(user)
+
+    @staticmethod
+    def retrieve_users_list() -> List[User]:
+        return User.query.all()

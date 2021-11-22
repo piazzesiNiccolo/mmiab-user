@@ -10,13 +10,35 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous']
+    SERIALIZE_LIST = [
+        'id', 
+        'email', 
+        'first_name',
+        'last_name',
+        'nickname',
+        'location',
+        'pfp_path',
+        'content_filter',
+        'blacklist',
+        'lottery_points',
+        'is_banned',
+        'is_active', 
+        'authenticated', 
+        'is_anonymous',
+    ]
 
     # All fields of user
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
     first_name = db.Column(db.Unicode(128), nullable=False, unique=False)
     last_name = db.Column(db.Unicode(128), nullable=False, unique=False)
+    nickname = db.Column(db.Unicode(128), nullable=True)
+    location = db.Column(db.Unicode(128))
+    pfp_path = db.Column(db.Unicode(128), default="default.png")
+    content_filter = db.Column(db.Boolean, default=False)
+    blacklist = db.Column(db.Unicode(128))
+    lottery_points = db.Column(db.Integer, default=0)
+    is_banned = db.Column(db.Boolean, default=False)
     password = db.Column(db.Unicode(128))
     birthdate = db.Column(db.Date())
     phone = db.Column(db.Unicode(128), nullable=False, unique=True)

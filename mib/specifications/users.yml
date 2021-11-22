@@ -29,6 +29,32 @@ paths:
         default:
           description: Error during creation of the user
 
+
+  /users_list:
+    get:
+      tags: [Users]
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: search users with the keyword specified
+      description: Gets the list of all users
+      operationId: mib.resources.users.get_users_list
+      responses:
+        200:
+          description: Return users list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        default:
+          description: An error occured during retrieving the user
+
+
   /user/{user_id}:
     get:
       tags: [ User ]
@@ -89,6 +115,7 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+
   /authenticate:
     post:
       summary: Authenticate a user
@@ -151,39 +178,68 @@ components:
   schemas:
     User:
       required:
-        - firstname
-        - lastname
+        - first_name
+        - last_name
         - email
         - birthdate
       type: object
       properties:
-        firstname:
+        first_name:
           type: string
-          description: First name of customer
+          description: First name of user
           example: Mario
-        lastname:
+        last_name:
           type: string
-          description: Last name of customer
+          description: Last name of user
           example: Rossi
+        nickname:
+          type: string
+          description: Nickname of user
+          example: '_mariorossi_'
+        location:
+          type: string
+          description: Place of user
+          example: Pisa
+        pfp_path:
+          type: string
+          description: Path of user profile picture
+          example: 'default.png'
+        blacklist:
+          type: string
+          description: List of blacklisted users
+          example: '1|2'
+        content_filter:
+          type: boolean
+          description: Flag for content filter of user
+          example: false
+        lottery_points:
+          type: integer
+          description: Number of user lottery points
+          example: 0
+          format: int64
+        is_banned:
+          type: boolean
+          description: Flag indicating if user is banned
+          example: false
         email:
           type: string
-          description: Customer email
+          description: User email
           example: mario.rossi@example.org
           format: email
         birthdate:
           type: string
-          description: Customer birthdate
+          description: User birthdate
           example: '2020-01-01'
           format: date
         phone:
           type: string
-          description: Customer phone number
+          description: User phone number
           example: '+39 3332222384'
           minLength: 10
           maxLength: 25
         password:
           type: string
-          description: Customer password
+          description: User password
           example: 'abcd1234'
           minLength: 5
           maxLength: 127

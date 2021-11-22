@@ -89,4 +89,9 @@ class User(db.Model):
         return self.authenticated
 
     def serialize(self):
-        return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+        _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+        _dict['birthdate'] = self.birthdate.strftime('%d/%m/%Y')
+        return _dict
+
+
+

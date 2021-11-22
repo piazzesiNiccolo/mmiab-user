@@ -17,6 +17,8 @@ class User(db.Model):
         'last_name',
         'nickname',
         'location',
+        'birthdate',
+        'phone',
         'pfp_path',
         'content_filter',
         'phone',
@@ -64,6 +66,15 @@ class User(db.Model):
 
     def set_last_name(self, name):
         self.last_name = name
+
+    def set_nickname(self, name):
+        self.nickname = None if name == '' else name
+
+    def set_location(self, location):
+        self.location = None if location == '' else location
+
+    def set_pfp_path(self, path):
+        self.pfp_path = 'default.pgn' if path == '' else path
 
     def is_authenticated(self):
         return self.authenticated

@@ -21,14 +21,12 @@ class User(db.Model):
         'phone',
         'pfp_path',
         'content_filter',
-        'phone',
         'blacklist',
         'lottery_points',
         'is_banned',
         'is_active', 
         'authenticated', 
         'is_anonymous',
-        'birthdate',
     ]
 
     # All fields of user

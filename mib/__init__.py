@@ -3,6 +3,8 @@ Flask initialization
 """
 import os
 
+from flask.app import Flask
+
 __version__ = '0.1'
 
 import connexion
@@ -20,7 +22,7 @@ api_app = None
 logger = None
 
 
-def create_app():
+def create_app() -> Flask:
     """
     This method create the Flask application.
     :return: Flask App Object

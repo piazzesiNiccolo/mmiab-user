@@ -30,7 +30,7 @@ paths:
           description: Error during creation of the user
 
 
-  /users_list:
+  /users_list/{id}:
     get:
       tags: [Users]
       parameters:
@@ -39,7 +39,14 @@ paths:
           schema:
             type: string
           description: search users with the keyword specified
-      description: Gets the list of all users
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the user for whom the list is returned
+      description: Gets the list of all users for the user identified by id
       operationId: mib.resources.users.get_users_list
       responses:
         200:
@@ -51,6 +58,119 @@ paths:
                 properties:
                   user:
                     $ref: '#/components/schemas/User'
+        default:
+          description: An error occured during retrieving the user
+
+  /blacklist/{id}:
+    get:
+      tags: [Users]
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: search users with the keyword specified
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the user for whom the list is returned
+      description: Gets the list of blocked users for the user identified by id
+      operationId: mib.resources.users.get_blacklist
+      responses:
+        200:
+          description: Return blocked users list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        default:
+          description: An error occured during retrieving the user
+
+  /blacklist/{blocking}/{blocked}:
+    get:
+      tags: [Users]
+      parameters:
+        - in: path
+          name: blocking
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocking user
+        - in: path
+          name: blocked
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocked user
+      description: Checks if the blocking user has blacklisted the blocked user
+      operationId: mib.resources.users.is_blocked
+      responses:
+        200:
+          description: Return the state of the blocked user
+        404:
+          description: Blocking user not found
+        default:
+          description: An error occured during retrieving the user
+    put:
+      tags: [Users]
+      parameters:
+        - in: path
+          name: blocking
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocking user
+        - in: path
+          name: blocked
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocked user
+      description: Lets the blocking user to blacklist another user
+      operationId: mib.resources.users.add_to_blacklist
+      responses:
+        201:
+          description: User added to blacklist
+        404:
+          description: Blocking or blocked user not found
+        403:
+          description: Users cannot blacklist themselves
+        default:
+          description: An error occured during retrieving the user
+    delete:
+      tags: [Users]
+      parameters:
+        - in: path
+          name: blocking
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocking user
+        - in: path
+          name: blocked
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocked user
+      description: Lets the blocking user to remove from blacklist another user
+      operationId: mib.resources.users.remove_from_blacklist
+      responses:
+        202:
+          description: User removed from blacklist
+        404:
+          description: Blocking or blocked user not found
         default:
           description: An error occured during retrieving the user
 

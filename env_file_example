@@ -2,7 +2,7 @@
 # Flask Configuration
 #
 #------------------------
-FLASK_ENV=production
+FLASK_ENV=testing
 
 #
 # Postgres configuration

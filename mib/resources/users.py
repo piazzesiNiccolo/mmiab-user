@@ -94,23 +94,21 @@ def toggle_content_filter(id: int):
         It enables the content filter option for a user if disabled
         and viceversa.
         """
-        db_user = db.session.query(User).filter(User.id == id)
-        if db_user.count() == 0:
+        filter = UserManager.set_content_filter(id)
+
+        if filter == -1:
             response_object = {
             'status': 'failed',
             'Message': "User not found",
             }
             return jsonify(response_object), 404
-
-        new_val = not db_user.first().content_filter
-        db_user.update({User.content_filter: new_val})
-        db.session.commit()
-
-        response_object = {
-            'status': 'Success',
-            'Message': "Content filter status changed",
-            }
-        return jsonify(response_object), 404
+        else:
+            response_object = {
+                'status': 'Success',
+                'Message': "Content filter status changed",
+                'Value': filter
+                }
+            return jsonify(response_object), 200
 
 
 

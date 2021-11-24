@@ -11,7 +11,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import logging
 
-db = None
+db = SQLAlchemy()
 migrate = None
 debug_toolbar = None
 redis_client = None
@@ -58,9 +58,7 @@ def create_app():
     env.from_object(config_object)
 
     # registering db
-    db = SQLAlchemy(
-        app=app
-    )
+    db.init_app(app=app)
 
     # requiring the list of models
     import mib.models
@@ -74,7 +72,7 @@ def create_app():
     # checking the environment
     if flask_env == 'testing' or flask_env == 'development':
         # we need to populate the db
-        db.create_all()
+        db.create_all(app=app)
 
     # registering to api app all specifications
     register_specifications(api_app)

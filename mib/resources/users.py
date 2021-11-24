@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from mib.dao.user_manager import UserManager
+from mib.dao.user_blacklist import UserBlacklist
 from mib.models.user import User
 from datetime import datetime
 from mib import db
@@ -111,27 +112,58 @@ def toggle_content_filter(id: int):
             }
         return jsonify(response_object), 404
 
-def get_users_list():
+
+
+def get_users_list(id):
+
     key_word = request.args.get('q',default=None)
 
     users = UserManager.retrieve_users_list()
-
-    filter_users = lambda elem: (
-            key_word in elem.first_name
-            or key_word in elem.last_name
-            or key_word in elem.email
-            or key_word in elem.phone
-            or (elem.nickname and key_word in elem.nickname)
-            or (elem.location and key_word in elem.location)
-            
-        )
-    filtered_users = list(filter(filter_users, users))
-    filtered_users = filtered_users if len(filtered_users) > 0 else users
+    valid_users = UserBlacklist.filter_blacklist(id, users)
+    filtered_users = UserManager.filter_users_by_keyword(valid_users, key_word)
 
     response_object = {
         'status': 'success',
-        'users': [user.serialize() for user in users],
+        'users': [user.serialize() for user in filtered_users],
     }
     return jsonify(response_object), 200 
 
+def get_blacklist(id):
+    key_word = request.args.get('q',default=None)
+
+    blocked_users = UserBlacklist.get_blocked_users(id)
+    print('blocked', blocked_users)
+    filtered_users = UserManager.filter_users_by_keyword(blocked_users, key_word)
+    print('filtered', filtered_users)
+
+    response_object = {
+        'status': 'success',
+        'users': [user.serialize() for user in filtered_users],
+    }
+    return jsonify(response_object), 200 
+
+def add_to_blacklist(blocking, blocked):
+    code, message = UserBlacklist.add_user_to_blacklist(blocking, blocked)
+    response_object = { 
+        'status': 'success' if code == 201 else 'failed',
+        'message': message
+    }
+    return jsonify(response_object), code
+
+def remove_from_blacklist(blocking, blocked):
+    code, message = UserBlacklist.remove_user_from_blacklist(blocking, blocked)
+    response_object = { 
+        'status': 'success' if code == 202 else 'failed',
+        'message': message
+    }
+    return jsonify(response_object), code
+
+def is_blocked(blocking, blocked):
+    val, code, message = UserBlacklist.is_user_blocked(blocking, blocked)
+    response_object = { 
+        'status': 'success' if code == 200 else 'failed',
+        'message': message,
+        'blocked': val
+    }
+    return jsonify(response_object), code
 

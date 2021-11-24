@@ -84,19 +84,17 @@ class TestUserBlacklist:
         assert UserBlacklist.get_blocked_users(1) == []
 
     def test_blacklist_get_blocked_not_esisting_blocker(self):
-        val, code, message = UserBlacklist.is_user_blocked(1, 2)
+        val = UserBlacklist.is_user_blocked(1, 2)
         assert val == False
-        assert code == 404
-        assert message == 'Blocking user not found'
 
     def test_blacklist_get_blocked_ok(self, users):
-        assert UserBlacklist.is_user_blocked(1, 2) == (False, 200, 'State of blocked users')
+        assert UserBlacklist.is_user_blocked(1, 2) == False
         code, _ = UserBlacklist.add_user_to_blacklist(1,2)
         assert code == 201
-        assert UserBlacklist.is_user_blocked(1, 2) == (True, 200, 'State of blocked users')
+        assert UserBlacklist.is_user_blocked(1, 2) == True
         code, _ = UserBlacklist.remove_user_from_blacklist(1,2)
         assert code == 200
-        assert UserBlacklist.is_user_blocked(1, 2) == (False, 200, 'State of blocked users')
+        assert UserBlacklist.is_user_blocked(1, 2) == False
 
 
 

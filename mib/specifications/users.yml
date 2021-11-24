@@ -236,21 +236,12 @@ paths:
           content:
             application/json:
               schema:
-                type: integer
-                format: int64
+                type: object
                 properties:
-                  user:
-                    $ref: '#/components/schemas/User'
+                  value:
+                    type: boolean
         404:
           description: User not found
-          content:
-            application/json:
-              schema:
-                type: integer
-                format: int64
-                properties:
-                  user:
-                    $ref: '#/components/schemas/User'
         default:
           description: An error occured during set the content filter
 

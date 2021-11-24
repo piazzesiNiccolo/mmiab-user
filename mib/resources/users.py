@@ -96,7 +96,7 @@ def toggle_content_filter(id: int):
         and viceversa.
         """
         filter = UserManager.set_content_filter(id)
-        print("Nuovo Valore : " + filter)
+        
         if filter == -1:
             response_object = {
             'status': 'failed',

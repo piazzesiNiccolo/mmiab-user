@@ -175,7 +175,7 @@ paths:
           description: An error occured during retrieving the user
 
   /report/{id_reporter}/{id_reported}:
-    post:
+    put:
       tags: [User]
       description: Enables the user identified by id_reporter to report a user identified by id_reported
       operationId: mib.resources.users.report

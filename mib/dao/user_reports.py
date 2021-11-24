@@ -10,6 +10,8 @@ class UserReport:
 
     # add a report and return a number of report of the reported user
     def add_report(id_reported, id_signaller):
+        if id_reported == id_signaller:
+            return 403, "Users cannot report themselves"
         if UserManager.retrieve_by_id(id_reported) is None:
             return 404, "Reported user not found"
         elif UserManager.retrieve_by_id(id_signaller) is None:

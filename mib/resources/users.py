@@ -163,6 +163,7 @@ def report(id_reporter: int, id_reported: int):
         'status' : 'success' if code == 201 else 'failed',
         'message' : message,
     }
+    print(response)
     return jsonify(response), code
 
 def user_status(id, other):

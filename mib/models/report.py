@@ -2,7 +2,7 @@ from mib import db
 
 class Report(db.Model):
 
-    __tablename__ = "report"
+    __tablename__ = "Report"
 
     # id_message is the primary key that identify a report
     id_report = db.Column(db.Integer, primary_key=True, autoincrement=True)

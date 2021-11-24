@@ -2,6 +2,7 @@ from flask import request, jsonify
 from mib.dao.user_manager import UserManager
 from mib.models.user import User
 from datetime import datetime
+from mib import db
 
 
 def create_user():
@@ -86,6 +87,29 @@ def delete_user(user_id):
     }
 
     return jsonify(response_object), 202
+
+def toggle_content_filter(id: int):
+        """
+        It enables the content filter option for a user if disabled
+        and viceversa.
+        """
+        db_user = db.session.query(User).filter(User.id == id)
+        if db_user.count() == 0:
+            response_object = {
+            'status': 'failed',
+            'Message': "User not found",
+            }
+            return jsonify(response_object), 404
+
+        new_val = not db_user.first().content_filter
+        db_user.update({User.content_filter: new_val})
+        db.session.commit()
+
+        response_object = {
+            'status': 'Success',
+            'Message': "Content filter status changed",
+            }
+        return jsonify(response_object), 404
 
 def get_users_list():
     key_word = request.args.get('q',default=None)

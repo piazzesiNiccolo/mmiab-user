@@ -93,5 +93,8 @@ class User(db.Model):
         _dict['birthdate'] = self.birthdate.strftime('%d/%m/%Y')
         return _dict
 
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
 
 

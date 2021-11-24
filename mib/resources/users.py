@@ -177,3 +177,43 @@ def user_status(id, other):
     }
     return jsonify(response_object), 
 
+def update_user(user_id):
+    data = request.get_json()
+    user = UserManager.retrieve_by_id(user_id)
+
+    if user is None:
+        return jsonify({
+            'status': 'User not found'
+        }), 404
+
+    if user.check_password(data["old_password"]) == False:
+        return jsonify({
+                'status': 'Password incorrect'
+        }), 200
+
+    if data["new_password"] is not None and \
+       data["old_password"] is not None and \
+       user.check_password(data["old_password"]):
+        user.set_password(data["new_password"])
+
+    user.set_email(data.get("email"))
+    user.set_first_name(data.get('first_name'))
+    user.set_last_name(data.get('last_name'))
+    user.set_nickname(data.get('nickname'))
+    user.set_location(data.get('location'))
+    user.set_pfp_path(data.get('profile_picture'))
+    user.set_birthday(
+        datetime.strptime(
+            data.get('birthdate'),
+            '%d/%m/%Y',
+        )
+    )
+    user.set_phone(data.get('phone'))
+
+    UserManager.update_user(user)
+
+    response_object = {
+        'status': 'success',
+    }
+    return jsonify(response_object), 201
+

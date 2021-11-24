@@ -266,6 +266,27 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+    put:
+      tags: [ User ]
+      description: Modify a user information
+      operationId: mib.resources.users.update_user
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Password incorrect
+        201:
+          description: User information modified correctly
+        404:
+          description: User not found
+        default:
+          description: An error occured during modifing the user
 
     delete:
       tags: [ User ]

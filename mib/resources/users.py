@@ -95,7 +95,7 @@ def toggle_content_filter(id: int):
         and viceversa.
         """
         filter = UserManager.set_content_filter(id)
-
+        print("Nuovo Valore : " + filter)
         if filter == -1:
             response_object = {
             'status': 'failed',
@@ -106,7 +106,7 @@ def toggle_content_filter(id: int):
             response_object = {
                 'status': 'Success',
                 'Message': "Content filter status changed",
-                'Value': filter
+                'Value': filter,
                 }
             return jsonify(response_object), 200
 

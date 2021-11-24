@@ -40,13 +40,12 @@ class UserManager(Manager):
 
     @staticmethod
     def set_content_filter(id_: int):
-        db_user = db.session.query(User).filter(User.id == id)
+        db_user = db.session.query(User).filter(User.id == id_)
         if db_user.count() == 0:
             return -1
         new_val = not db_user.first().content_filter
         db_user.update({User.content_filter: new_val})
         db.session.commit()
-
         return new_val
 
     @staticmethod

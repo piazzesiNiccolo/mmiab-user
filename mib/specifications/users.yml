@@ -174,13 +174,13 @@ paths:
         default:
           description: An error occured during retrieving the user
 
-  /content_filter/{user_id}:
+  /content_filter/{id}:
     get:
       summary: Set content filter
       tags: [ Users ]
       operationId:  mib.resources.users.toggle_content_filter
       parameters:
-        - name: user_id
+        - name: id
           description: User Unique ID
           in: path
           required: true
@@ -190,8 +190,24 @@ paths:
       responses:
         200:
           description: Status content filter changed, return new value
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         404:
           description: User not found
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         default:
           description: An error occured during set the content filter
 

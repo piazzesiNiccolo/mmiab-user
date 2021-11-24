@@ -174,7 +174,34 @@ paths:
         default:
           description: An error occured during retrieving the user
 
-
+  /report/{id_reporter}/{id_reported}:
+    post:
+      tags: [User]
+      description: Enables the user identified by id_reporter to report a user identified by id_reported
+      operationId: mib.resources.users.report
+      parameters:
+        - name: id_reporter
+          description: if of the reporting user
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        
+        - name: id_reported
+          description: if of the reported user
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: User already reported
+        201:
+          description: User correctly reported
+        404:
+          description: User not found
   /user/{user_id}:
     get:
       tags: [ User ]

@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from mib.dao.user_manager import UserManager
 from mib.dao.user_blacklist import UserBlacklist
+from mib.dao.user_reports import UserReport
 from mib.models.user import User
 from datetime import datetime
 
@@ -141,3 +142,10 @@ def is_blocked(blocking, blocked):
     }
     return jsonify(response_object), code
 
+def report(id_reporter: int, id_reported: int):
+    code, message = UserReport.add_report(id_reported,id_reporter)
+    response = {
+        'status' : 'success' if code == 201 else 'failed',
+        'message' : message,
+    }
+    return jsonify(response), code

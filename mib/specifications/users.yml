@@ -139,6 +139,8 @@ paths:
       description: Lets the blocking user to blacklist another user
       operationId: mib.resources.users.add_to_blacklist
       responses:
+        200:
+          description: User already in blacklist
         201:
           description: User added to blacklist
         404:
@@ -167,7 +169,7 @@ paths:
       description: Lets the blocking user to remove from blacklist another user
       operationId: mib.resources.users.remove_from_blacklist
       responses:
-        202:
+        200:
           description: User removed from blacklist
         404:
           description: Blocking or blocked user not found

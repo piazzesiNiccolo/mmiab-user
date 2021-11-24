@@ -3,8 +3,8 @@ import mock
 from mib.dao.user_reports import UserReport
 from mib.resources.users import *
 import requests
-class TestUserServices:
 
+class TestUserServices:
 
     def test_report_404(self, test_client):
         rep = UserReport
@@ -23,6 +23,7 @@ class TestUserServices:
         assert resp.json['status'] == 'failed'
         assert resp.json['message'] == "Users cannot report themselves"
         assert resp.status_code == 403
+
     def test_report_200(self, test_client):
         rep = UserReport
         rep.add_report = mock.MagicMock()

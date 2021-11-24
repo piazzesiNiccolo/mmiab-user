@@ -6,6 +6,6 @@ flask-debugtoolbar-sqlalchemy==0.2.0
 pytest==6.1.1
 pytest-env
 pytest-cov==2.10.1
+mock
 Faker==4.14.0
 tox==3.20.1
-mockredispy==2.9.3

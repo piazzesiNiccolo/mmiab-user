@@ -133,15 +133,6 @@ def remove_from_blacklist(blocking, blocked):
     }
     return jsonify(response_object), code
 
-def is_blocked(blocking, blocked):
-    val, code, message = UserBlacklist.is_user_blocked(blocking, blocked)
-    response_object = { 
-        'status': 'success' if code == 200 else 'failed',
-        'message': message,
-        'blocked': val
-    }
-    return jsonify(response_object), code
-
 def report(id_reporter: int, id_reported: int):
     code, message = UserReport.add_report(id_reported,id_reporter)
     response = {
@@ -149,3 +140,15 @@ def report(id_reporter: int, id_reported: int):
         'message' : message,
     }
     return jsonify(response), code
+
+def user_status(id, other):
+    blocked = UserBlacklist.is_user_blocked(id, other)
+    reported = UserReport.is_user_reported(id, other)
+
+    response_object = { 
+        'status': 'success',
+        'blocked': blocked,
+        'reported': reported,
+    }
+    return jsonify(response_object), 
+

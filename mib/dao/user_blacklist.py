@@ -94,6 +94,6 @@ class UserBlacklist:
         """
         current_user = UserManager.retrieve_by_id(current_id)
         if current_user is None:
-            return False, 404, "Blocking user not found"
+            return False
         return other_id in UserBlacklist._get_blacklist(current_user), 200, "State of blocked users"
 

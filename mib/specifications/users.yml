@@ -93,32 +93,6 @@ paths:
           description: An error occured during retrieving the user
 
   /blacklist/{blocking}/{blocked}:
-    get:
-      tags: [Users]
-      parameters:
-        - in: path
-          name: blocking
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: id of the blocking user
-        - in: path
-          name: blocked
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: id of the blocked user
-      description: Checks if the blocking user has blacklisted the blocked user
-      operationId: mib.resources.users.is_blocked
-      responses:
-        200:
-          description: Return the state of the blocked user
-        404:
-          description: Blocking user not found
-        default:
-          description: An error occured during retrieving the user
     put:
       tags: [Users]
       parameters:
@@ -202,8 +176,46 @@ paths:
           description: User already reported
         201:
           description: User correctly reported
+        403:
+          description: Users cannot report themselves
         404:
           description: User not found
+
+  /user_status/{id}/{other}:
+    get:
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocking user
+        - in: path
+          name: other
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the blocked user
+      description: Checks if the other user has been blocked or reported by the user identified by id
+      operationId: mib.resources.users.user_status
+      responses:
+        200:
+          description: Return the state of the other user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blocked:
+                    type: boolean
+                  reported:
+                    type: boolean
+        default:
+          description: An error occured during retrieving the user
+
   /user/{user_id}:
     get:
       tags: [ User ]

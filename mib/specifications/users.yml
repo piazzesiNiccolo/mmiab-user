@@ -193,7 +193,7 @@ paths:
         404:
           description: User not found
         default:
-          description: An error occured during retrieving the user
+          description: An error occured during set the content filter
 
   /user/{user_id}:
     get:

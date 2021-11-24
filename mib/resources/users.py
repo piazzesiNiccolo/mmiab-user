@@ -4,6 +4,7 @@ from mib.dao.user_blacklist import UserBlacklist
 from mib.dao.user_reports import UserReport
 from mib.models.user import User
 from datetime import datetime
+from mib import db
 
 
 def create_user():
@@ -89,8 +90,31 @@ def delete_user(user_id):
 
     return jsonify(response_object), 202
 
+def toggle_content_filter(id: int):
+        """
+        It enables the content filter option for a user if disabled
+        and viceversa.
+        """
+        filter = UserManager.set_content_filter(id)
+        print("Nuovo Valore : " + filter)
+        if filter == -1:
+            response_object = {
+            'status': 'failed',
+            'Message': "User not found",
+            }
+            return jsonify(response_object), 404
+        else:
+            response_object = {
+                'status': 'Success',
+                'Message': "Content filter status changed",
+                'Value': filter,
+                }
+            return jsonify(response_object), 200
+
+
 
 def get_users_list(id):
+
     key_word = request.args.get('q',default=None)
 
     users = UserManager.retrieve_users_list()

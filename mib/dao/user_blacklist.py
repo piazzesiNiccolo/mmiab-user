@@ -37,16 +37,22 @@ class UserBlacklist:
         if current_id == other_id:
             return 403, "Users cannot block themselves"
         current_user = UserManager.retrieve_by_id(current_id)
+        print(current_user)
         if current_user is None:
             return 404, "Blocking user not found"
         if UserManager.retrieve_by_id(other_id) is None:
             return 404, "Blocked user not found"
 
+        code, message = 201, "User added to blacklist"
+
         blocked_users = UserBlacklist._get_blacklist(current_user)
+        print(blocked_users, other_id)
+        if other_id in blocked_users:
+            code, message = 200, "User already in blacklist"
         blocked_users.add(other_id)
         UserBlacklist._set_blacklist(current_user, blocked_users)
 
-        return 201, "User added to blacklist"
+        return code, message
 
     @staticmethod
     def remove_user_from_blacklist(current_id: int, other_id: int) -> Tuple[int, str]:
@@ -60,7 +66,7 @@ class UserBlacklist:
         blocked_users.discard(other_id)
         UserBlacklist._set_blacklist(current_user, blocked_users)
 
-        return 202, "User removed from blacklist"
+        return 200, "User removed from blacklist"
 
     @staticmethod
     def filter_blacklist(current_id: int, users: List[User]) -> List[User]:
@@ -88,6 +94,6 @@ class UserBlacklist:
         """
         current_user = UserManager.retrieve_by_id(current_id)
         if current_user is None:
-            return False, 404, "Blocking user not found"
+            return False
         return other_id in UserBlacklist._get_blacklist(current_user), 200, "State of blocked users"
 

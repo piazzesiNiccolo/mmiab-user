@@ -84,11 +84,15 @@ class UserBlacklist:
         Returns a list of blacklisted users
         """
         current_user = UserManager.retrieve_by_id(current_id)
-        blocked_users = UserBlacklist._get_blacklist(current_user)
-        return UserManager.retrieve_users_list(id_list=list(blocked_users), keep_empty=True)
+        if current_user is None:
+            return []
+        else:
+
+            blocked_users = UserBlacklist._get_blacklist(current_user)
+            return UserManager.retrieve_users_list(id_list=list(blocked_users), keep_empty=True)
 
     @staticmethod
-    def is_user_blocked(current_id: int, other_id: int) -> Tuple[bool, int, str]:
+    def is_user_blocked(current_id: int, other_id: int) -> bool:
         """
         Check if a user is in the blacklist of a given one.
         """

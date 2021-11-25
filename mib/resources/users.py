@@ -82,13 +82,20 @@ def delete_user(user_id):
     :param user_id the id of user to be deleted
     :return json response
     """
-    UserManager.delete_user_by_id(user_id)
-    response_object = {
-        'status': 'success',
-        'message': 'Successfully deleted',
-    }
+    if UserManager.retrieve_by_id(id) is None:
+        response_object = {
+            'status': "failed",
+            "message":"User not found"
+        }
+        return jsonify(response_object),404
+    else:
+        UserManager.delete_user_by_id(user_id)
+        response_object = {
+            'status': 'success',
+            'message': 'Successfully deleted',
+        }
 
-    return jsonify(response_object), 202
+        return jsonify(response_object), 202
 
 def toggle_content_filter(id: int):
         """
@@ -114,26 +121,29 @@ def toggle_content_filter(id: int):
 
 
 def get_users_list(id):
+    if UserManager.retrieve_by_id(id) is None:
+        response_object = {
+            "status":"failed",
+            "message":"not found"
+        }
+        return jsonify(response_object),404
+    else:
+        key_word = request.args.get('q',default=None)
+        users = UserManager.retrieve_users_list()
+        valid_users = UserBlacklist.filter_blacklist(id, users)
+        filtered_users = UserManager.filter_users_by_keyword(valid_users, key_word)
 
-    key_word = request.args.get('q',default=None)
-
-    users = UserManager.retrieve_users_list()
-    valid_users = UserBlacklist.filter_blacklist(id, users)
-    filtered_users = UserManager.filter_users_by_keyword(valid_users, key_word)
-
-    response_object = {
-        'status': 'success',
-        'users': [user.serialize() for user in filtered_users],
-    }
-    return jsonify(response_object), 200 
+        response_object = {
+            'status': 'success',
+            'users': [user.serialize() for user in filtered_users],
+        }
+        return jsonify(response_object), 200 
 
 def get_blacklist(id):
     key_word = request.args.get('q',default=None)
 
     blocked_users = UserBlacklist.get_blocked_users(id)
-    print('blocked', blocked_users)
     filtered_users = UserManager.filter_users_by_keyword(blocked_users, key_word)
-    print('filtered', filtered_users)
 
     response_object = {
         'status': 'success',
@@ -175,7 +185,7 @@ def user_status(id, other):
         'blocked': blocked,
         'reported': reported,
     }
-    return jsonify(response_object), 
+    return jsonify(response_object), 200
 
 def update_user(user_id):
     data = request.get_json()
@@ -183,17 +193,27 @@ def update_user(user_id):
 
     if user is None:
         return jsonify({
-            'status': 'User not found'
+            "status":"failed",
+            'message': 'User not found'
         }), 404
-
-    if user.check_password(data["old_password"]) == False:
+    if data.get("phone") and UserManager.retrieve_by_phone(phone=data["phone"]) is not None:
         return jsonify({
-                'status': 'Password incorrect'
+            "status":"failed",
+            'message': "Phone already used"
+
+        }), 400
+    if data.get("email") and UserManager.retrieve_by_email(email=data["email"]) is not None:
+        return jsonify({
+            "status":"failed",
+            'message': "Email already used"
+        }),400
+    if data.get("old_password") and not user.check_password(data["old_password"]):
+        return jsonify({
+                "status":"failed",
+                'message': 'Password incorrect'
         }), 200
 
-    if data["new_password"] is not None and \
-       data["old_password"] is not None and \
-       user.check_password(data["old_password"]):
+    if data.get("new_password"):
         user.set_password(data["new_password"])
 
     user.set_email(data.get("email"))
@@ -202,18 +222,19 @@ def update_user(user_id):
     user.set_nickname(data.get('nickname'))
     user.set_location(data.get('location'))
     user.set_pfp_path(data.get('profile_picture'))
-    user.set_birthday(
-        datetime.strptime(
-            data.get('birthdate'),
-            '%d/%m/%Y',
+    if data.get("birthdate"):
+        user.set_birthday(
+            datetime.strptime(
+                data.get('birthdate'),
+                '%d/%m/%Y',
+            )
         )
-    )
     user.set_phone(data.get('phone'))
 
     UserManager.update_user(user)
 
     response_object = {
-        'status': 'success',
+        'status': 'success'
     }
     return jsonify(response_object), 201
 

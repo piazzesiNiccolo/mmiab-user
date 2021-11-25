@@ -84,8 +84,10 @@ class TestUserBlacklist:
         assert UserBlacklist.get_blocked_users(1) == []
 
     def test_blacklist_get_blocked_not_esisting_blocker(self):
-        val = UserBlacklist.is_user_blocked(1, 2)
-        assert val == False
+        assert UserBlacklist.get_blocked_users(1) == []
+    
+    def test_is_user_blocked_id_not_exists(self):
+        assert not UserBlacklist.is_user_blocked(1,2)
 
     def test_blacklist_get_blocked_ok(self, users):
         assert UserBlacklist.is_user_blocked(1, 2) == False

@@ -17,7 +17,8 @@ def create_user():
     searched_user = UserManager.retrieve_by_email(email)
     if searched_user is not None:
         return jsonify({
-            'status': 'Already present'
+            'status': 'Already present',
+            'message': 'A user with this email is already registered',
         }), 200
 
     user = User()
@@ -40,7 +41,7 @@ def create_user():
     response_object = {
         'user': user.serialize(),
         'status': 'success',
-        'message': 'Successfully registered',
+        'message': 'User successfully registered',
     }
 
     return jsonify(response_object), 201
@@ -183,18 +184,26 @@ def update_user(user_id):
 
     if user is None:
         return jsonify({
-            'status': 'User not found'
+            'status': 'User not found',
+            'message': 'User not found',
         }), 404
 
-    if user.check_password(data["old_password"]) == False:
+    old_password = data.get('old_password')
+    old_password = None if old_password == '' else old_password
+    new_password = data.get('new_password')
+    new_password = None if new_password == '' else new_password
+
+    if ( 
+        not old_password or
+        not user.check_password(old_password)
+    ):
         return jsonify({
-                'status': 'Password incorrect'
+                'status': 'Password incorrect',
+                'message': 'Password incorrect'
         }), 200
 
-    if data["new_password"] is not None and \
-       data["old_password"] is not None and \
-       user.check_password(data["old_password"]):
-        user.set_password(data["new_password"])
+    if new_password:
+        user.set_password(new_password)
 
     user.set_email(data.get("email"))
     user.set_first_name(data.get('first_name'))
@@ -214,6 +223,7 @@ def update_user(user_id):
 
     response_object = {
         'status': 'success',
+        'message': 'User profile succesfully updated'
     }
     return jsonify(response_object), 201
 

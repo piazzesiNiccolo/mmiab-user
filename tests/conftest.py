@@ -25,6 +25,11 @@ def mock_rbe():
         yield mock
 
 @pytest.fixture
+def mock_rbp():
+    with patch('mib.dao.user_manager.UserManager.retrieve_by_phone') as mock:
+        yield mock
+
+@pytest.fixture
 def users():
     user = User(
     first_name='Niccolò',

@@ -58,6 +58,8 @@ paths:
                 properties:
                   user:
                     $ref: '#/components/schemas/User'
+        404:
+          description: User id not found
         default:
           description: An error occured during retrieving the user
 
@@ -285,6 +287,8 @@ paths:
           description: User information modified correctly
         404:
           description: User not found
+        400:
+          description: Unique fields already exists
         default:
           description: An error occured during modifing the user
 

@@ -72,7 +72,8 @@ class User(db.Model):
         self.location = None if location == '' else location
 
     def set_pfp_path(self, path):
-        self.pfp_path = 'default.pgn' if path == '' else path
+        if path != '':
+            self.pfp_path = path
 
     def is_authenticated(self):
         return self.authenticated

@@ -5,7 +5,8 @@ from mib import db
 from typing import List
 
 class UserManager(Manager):
-
+     
+    
     @staticmethod
     def create_user(user: User):
         Manager.create(user=user)
@@ -17,7 +18,6 @@ class UserManager(Manager):
 
     @staticmethod
     def retrieve_by_email(email):
-        Manager.check_none(email=email)
         return User.query.filter(User.email == email).first()
     
     @staticmethod

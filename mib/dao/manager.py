@@ -26,7 +26,7 @@ class Manager(object):
         It should implemented by child
         :return:
         """
-        pass
+        pass # pragma: no cover
 
     @staticmethod
     def update(**kwargs):

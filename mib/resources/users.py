@@ -152,7 +152,7 @@ def add_to_blacklist(blocking, blocked):
 def remove_from_blacklist(blocking, blocked):
     code, message = UserBlacklist.remove_user_from_blacklist(blocking, blocked)
     response_object = { 
-        'status': 'success' if code == 202 else 'failed',
+        'status': 'success' if code == 200 else 'failed',
         'message': message
     }
     return jsonify(response_object), code

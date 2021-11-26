@@ -17,7 +17,8 @@ def create_user():
     searched_user = UserManager.retrieve_by_email(email)
     if searched_user is not None:
         return jsonify({
-            'status': 'Already present'
+            'status': 'Already present',
+            'message': 'A user with this email is already registered',
         }), 200
 
     user = User()
@@ -40,7 +41,7 @@ def create_user():
     response_object = {
         'user': user.serialize(),
         'status': 'success',
-        'message': 'Successfully registered',
+        'message': 'User successfully registered',
     }
 
     return jsonify(response_object), 201
@@ -193,28 +194,40 @@ def update_user(user_id):
 
     if user is None:
         return jsonify({
-            "status":"failed",
-            'message': 'User not found'
+            'status': 'failed',
+            'message': 'User not found',
         }), 404
-    if data.get("phone") and UserManager.retrieve_by_phone(phone=data["phone"]) is not None:
+    new_mail = data.get("email") 
+    new_mail = None if new_mail == "" else new_mail
+    new_phone = data.get("phone") 
+    new_phone = None if new_phone == "" else new_phone
+    if new_mail and UserManager.retrieve_by_email(data.get("email")) is not None:
         return jsonify({
             "status":"failed",
-            'message': "Phone already used"
-
+            "message":"Email already used"
         }), 400
-    if data.get("email") and UserManager.retrieve_by_email(email=data["email"]) is not None:
+    if new_phone and UserManager.retrieve_by_phone(data.get("phone")) is not None:
         return jsonify({
             "status":"failed",
-            'message': "Email already used"
-        }),400
-    if data.get("old_password") and not user.check_password(data["old_password"]):
+            "message":"Phone already used"
+        }), 400
+    
+    old_password = data.get('old_password')
+    old_password = None if old_password == '' else old_password
+    new_password = data.get('new_password')
+    new_password = None if new_password == '' else new_password
+
+    if ( 
+        not old_password or
+        not user.check_password(old_password)
+    ):
         return jsonify({
-                "status":"failed",
+                'status': 'failed',
                 'message': 'Password incorrect'
         }), 200
 
-    if data.get("new_password"):
-        user.set_password(data["new_password"])
+    if new_password:
+        user.set_password(new_password)
 
     user.set_email(data.get("email"))
     user.set_first_name(data.get('first_name'))
@@ -234,7 +247,8 @@ def update_user(user_id):
     UserManager.update_user(user)
 
     response_object = {
-        'status': 'success'
+        'status': 'success',
+        'message': 'User profile succesfully updated'
     }
     return jsonify(response_object), 201
 

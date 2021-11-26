@@ -42,7 +42,7 @@ class TestUserServices:
             m.return_value == users[0]
             resp = test_client.post("/user", json=data)
             assert resp.json["status"] == "success"
-            assert resp.json["message"] == "Successfully registered"
+            assert resp.json["message"] == "User successfully registered"
             assert resp.json["user"]["email"] == data["email"]
             assert resp.status_code == 201
     
@@ -190,15 +190,8 @@ class TestUserServices:
     
     def test_update_not_unique_phone(self,test_client,users,mock_rbp):
         data = {
-            "email":"email@email.com",
-            "first_name":"Niccolò",
-            "last_name":"Piazzesi",
             "phone":"1234567890",
-            "birthdate":"01/01/2000",
-            "location":"Faella",
-            "nickname":"npiazzesi",
-            "password":"password12"
-
+            "nickname":"npiazzesi"
         }
         mock_rbp.return_value = 1
         resp = test_client.put("/user/1",json=data)
@@ -207,7 +200,7 @@ class TestUserServices:
     
     def test_update_not_unique_email(self,test_client,users,mock_rbe):
         data = {
-            "email":"email2@email2.com",
+            "email":"email1@email1.com",
             "first_name":"Niccolò",
             "last_name":"Piazzesi",
             "phone":"12302847890",
@@ -242,8 +235,8 @@ class TestUserServices:
         with mock.patch("mib.dao.user_manager.UserManager.update_user") as m:
             m.return_value == None
             resp = test_client.put("/user/1", json=data)
-            assert resp.json["status"] == "success"
-            assert resp.status_code == 201
+            assert resp.json["status"] == "failed"
+            assert resp.status_code == 200
     def test_update_user_ok(self,test_client,users):
 
         data = {
@@ -262,7 +255,8 @@ class TestUserServices:
     def test_update_user_no_birthdate(self,test_client,users):
 
         data = {
-            "first_name":"Luca"
+            "first_name":"Luca",
+            "old_password":"pass"
 
         }
         with mock.patch("mib.dao.user_manager.UserManager.update_user") as m:

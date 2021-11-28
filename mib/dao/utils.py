@@ -10,12 +10,10 @@ class Utils:
     def load_profile_picture(user : User) -> dict:
         file_name = user.pfp_path
         file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], file_name)
-        print('path', file_path)
         try:
             with open(file_path, 'rb') as file:
                 b64_file = base64.b64encode(file.read()).decode("utf8")
         except FileNotFoundError:
-            print('not found')
             b64_file = ''
 
         return {

@@ -248,12 +248,18 @@ def update_user(user_id):
     if new_password:
         user.set_password(new_password)
 
+    propic = data.get('profile_picture')
+    print(propic)
+    if propic == '' or not propic:
+        file_name = ''
+    else:
+        file_name = Utils.save_profile_picture(propic)
+
     user.set_email(data.get("email"))
     user.set_first_name(data.get('first_name'))
     user.set_last_name(data.get('last_name'))
     user.set_nickname(data.get('nickname'))
     user.set_location(data.get('location'))
-    file_name = Utils.save_profile_picture(data.get('profile_picture'))
     user.set_pfp_path(file_name)
     if data.get("birthdate"):
         user.set_birthday(

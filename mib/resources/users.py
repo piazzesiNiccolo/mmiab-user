@@ -1,10 +1,13 @@
-from flask import request, jsonify
+import os
+import base64
+from flask import request, jsonify, current_app
 from mib.dao.user_manager import UserManager
 from mib.dao.user_blacklist import UserBlacklist
 from mib.dao.user_reports import UserReport
-from mib.models.user import User
 from datetime import datetime
-from mib import db
+from uuid import uuid4
+from mib.models import User
+from mib.dao.utils import Utils
 
 
 def create_user():
@@ -28,7 +31,8 @@ def create_user():
     user.set_last_name(post_data.get('last_name'))
     user.set_nickname(post_data.get('nickname'))
     user.set_location(post_data.get('location'))
-    user.set_pfp_path(post_data.get('profile_picture'))
+    file_name = Utils.save_profile_picture(post_data.get('profile_picture'))
+    user.set_pfp_path(file_name)
     user.set_birthday(
         datetime.strptime(
             post_data.get('birthdate'),
@@ -40,6 +44,7 @@ def create_user():
 
     response_object = {
         'user': user.serialize(),
+        'profile_picture': Utils.load_profile_picture(user),
         'status': 'success',
         'message': 'User successfully registered',
     }
@@ -58,7 +63,10 @@ def get_user(user_id):
         response = {'status': 'User not present'}
         return jsonify(response), 404
 
-    return jsonify(user.serialize()), 200
+    return jsonify({
+        'user': user.serialize(),
+        'profile_picture': Utils.load_profile_picture(user)
+    }), 200
 
 
 def get_user_by_email(user_email):
@@ -73,7 +81,10 @@ def get_user_by_email(user_email):
         response = {'status': 'User not present'}
         return jsonify(response), 404
 
-    return jsonify(user.serialize()), 200
+    return jsonify({
+        'user': user.serialize(),
+        'profile_picture': Utils.load_profile_picture(user)
+    }), 200
 
 
 def delete_user(user_id):
@@ -137,20 +148,28 @@ def get_users_list(id):
         response_object = {
             'status': 'success',
             'users': [user.serialize() for user in filtered_users],
+            'profile_pictures': [Utils.load_profile_picture(user) for user in filtered_users],
         }
         return jsonify(response_object), 200 
 
 def get_blacklist(id):
-    key_word = request.args.get('q',default=None)
+    if UserManager.retrieve_by_id(id) is None:
+        response_object = {
+            "status":"failed",
+            "message":"not found"
+        }
+        return jsonify(response_object),404
+    else:
+        key_word = request.args.get('q',default=None)
+        blocked_users = UserBlacklist.get_blocked_users(id)
+        filtered_users = UserManager.filter_users_by_keyword(blocked_users, key_word)
 
-    blocked_users = UserBlacklist.get_blocked_users(id)
-    filtered_users = UserManager.filter_users_by_keyword(blocked_users, key_word)
-
-    response_object = {
-        'status': 'success',
-        'users': [user.serialize() for user in filtered_users],
-    }
-    return jsonify(response_object), 200 
+        response_object = {
+            'status': 'success',
+            'users': [user.serialize() for user in filtered_users],
+            'profile_pictures': [Utils.load_profile_picture(user) for user in filtered_users],
+        }
+        return jsonify(response_object), 200 
 
 def add_to_blacklist(blocking, blocked):
     code, message = UserBlacklist.add_user_to_blacklist(blocking, blocked)
@@ -201,12 +220,12 @@ def update_user(user_id):
     new_mail = None if new_mail == "" else new_mail
     new_phone = data.get("phone") 
     new_phone = None if new_phone == "" else new_phone
-    if new_mail and UserManager.retrieve_by_email(data.get("email")) is not None:
+    if new_mail and UserManager.retrieve_by_email(data.get("email"), notme=user_id) is not None:
         return jsonify({
             "status":"failed",
             "message":"Email already used"
         }), 400
-    if new_phone and UserManager.retrieve_by_phone(data.get("phone")) is not None:
+    if new_phone and UserManager.retrieve_by_phone(data.get("phone"), notme=user_id) is not None:
         return jsonify({
             "status":"failed",
             "message":"Phone already used"
@@ -229,12 +248,19 @@ def update_user(user_id):
     if new_password:
         user.set_password(new_password)
 
+    propic = data.get('profile_picture')
+    print(propic)
+    if propic == '' or not propic:
+        file_name = ''
+    else:
+        file_name = Utils.save_profile_picture(propic)
+
     user.set_email(data.get("email"))
     user.set_first_name(data.get('first_name'))
     user.set_last_name(data.get('last_name'))
     user.set_nickname(data.get('nickname'))
     user.set_location(data.get('location'))
-    user.set_pfp_path(data.get('profile_picture'))
+    user.set_pfp_path(file_name)
     if data.get("birthdate"):
         user.set_birthday(
             datetime.strptime(
@@ -248,7 +274,8 @@ def update_user(user_id):
 
     response_object = {
         'status': 'success',
-        'message': 'User profile succesfully updated'
+        'message': 'User profile succesfully updated',
+        'profile_picture': Utils.load_profile_picture(user),
     }
     return jsonify(response_object), 201
 

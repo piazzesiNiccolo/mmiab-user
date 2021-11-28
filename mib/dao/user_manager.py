@@ -12,18 +12,18 @@ class UserManager(Manager):
         Manager.create(user=user)
 
     @staticmethod
-    def retrieve_by_id(id_):
+    def retrieve_by_id(id_, notme=0):
         Manager.check_none(id=id_)
-        return User.query.get(id_)
+        return User.query.filter(User.id == id_, User.id != notme).first()
 
     @staticmethod
-    def retrieve_by_email(email):
-        return User.query.filter(User.email == email).first()
+    def retrieve_by_email(email, notme=0):
+        return User.query.filter(User.email == email, User.id != notme).first()
     
     @staticmethod
-    def retrieve_by_phone(phone):
+    def retrieve_by_phone(phone, notme=0):
         Manager.check_none(phone=phone)
-        return User.query.filter(User.phone == phone).first()
+        return User.query.filter(User.phone == phone, User.id != notme).first()
 
     @staticmethod
     def update_user(user: User):

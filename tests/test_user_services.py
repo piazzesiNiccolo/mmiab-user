@@ -35,16 +35,23 @@ class TestUserServices:
             "birthdate":"01/01/2000",
             "location":"Faella",
             "nickname":"npiazzesi",
-            "password":"password12"
-
+            "password":"password12",
+            "profile_picture": {
+                "name": "test.png",
+                "data": "",
+            }
         }
-        with mock.patch("mib.dao.user_manager.UserManager.create_user") as m:
-            m.return_value == users[0]
-            resp = test_client.post("/user", json=data)
-            assert resp.json["status"] == "success"
-            assert resp.json["message"] == "User successfully registered"
-            assert resp.json["user"]["email"] == data["email"]
-            assert resp.status_code == 201
+        with mock.patch("mib.dao.user_manager.UserManager.create_user") as create_m:
+            with mock.patch("mib.dao.utils.Utils.load_profile_picture") as load_m:
+                with mock.patch("mib.dao.utils.Utils.save_profile_picture") as save_m:
+                    create_m.return_value == users[0]
+                    save_m.return_value = 'default.png'
+                    load_m.return_value = ''
+                    resp = test_client.post("/user", json=data)
+                    assert resp.json["status"] == "success"
+                    assert resp.json["message"] == "User successfully registered"
+                    assert resp.json["user"]["email"] == data["email"]
+                    assert resp.status_code == 201
     
     def test_delete_user_not_exists(self,test_client,mock_rbi):
         mock_rbi.return_value = None
@@ -71,7 +78,7 @@ class TestUserServices:
     def test_get_user_by_id_exists(self, test_client, mock_rbi,users):
         mock_rbi.return_value = users[0]
         resp = test_client.get("/user/1")
-        assert resp.json["email"] == "email@email.com"
+        assert resp.json['user']["email"] == "email@email.com"
         assert resp.status_code == 200
     
     def test_get_user_by_email_not_exists(self, test_client, mock_rbe):
@@ -83,7 +90,7 @@ class TestUserServices:
     def test_get_user_by_email_exists(self, test_client, mock_rbe, users):
         mock_rbe.return_value = users[0]
         resp = test_client.get("/user_email/email@email.com")
-        assert resp.json["email"] == "email@email.com"
+        assert resp.json['user']['email'] == "email@email.com"
         assert resp.status_code == 200
     
     def test_users_list_id_not_exists(self, test_client,mock_rbi):
@@ -98,6 +105,12 @@ class TestUserServices:
         assert resp.json["users"][0]["email"] == "email@email.com"
         assert resp.status_code == 200
     
+    def test_get_blacklist_id_not_exists(self, test_client, mock_rbi):
+        mock_rbi.return_value = None
+        resp = test_client.get("/blacklist/1")
+        assert resp.json["status"] == "failed"
+        assert resp.status_code == 404
+
     def test_get_blacklist(self, test_client, users):
         with mock.patch("mib.dao.user_blacklist.UserBlacklist.get_blocked_users") as m:
             m.return_value = users[1:]
@@ -105,13 +118,21 @@ class TestUserServices:
             assert resp.json["status"] == "success"
             assert resp.json["users"][0]["email"] == "email1@email1.com"
             assert resp.status_code == 200
+
+    def test_get_blacklist(self, test_client, users):
+        with mock.patch("mib.dao.user_blacklist.UserBlacklist.get_blocked_users") as m:
+            m.return_value = users[1:]
+            resp = test_client.get("blacklist/1")
+            assert resp.json["status"] == "success"
+            assert resp.json["users"][0]["email"] == "email1@email1.com"
+            assert resp.status_code == 200
+
     def test_enable_filter_user_not_exists(self, test_client):
         with mock.patch('mib.dao.user_manager.UserManager.set_content_filter') as m:
             m.return_value = -1
             resp = test_client.get("/content_filter/1")
             assert resp.json["status"] == "failed"
             assert resp.status_code == 404
-    
   
     @pytest.mark.parametrize("filter_val,code, status, value",[
         (True, 200, "Success", True),
@@ -237,13 +258,34 @@ class TestUserServices:
             resp = test_client.put("/user/1", json=data)
             assert resp.json["status"] == "failed"
             assert resp.status_code == 200
+
     def test_update_user_ok(self,test_client,users):
 
         data = {
             "first_name":"Giovanni",
             "old_password":"pass",
             "new_password":"password34",
-            "birthdate":"01/01/1993"
+            "birthdate":"01/01/1993",
+            "profile_picture": {
+                "name": "new_propic.png",
+                "data": "",
+            },
+        }
+        with mock.patch("mib.dao.user_manager.UserManager.update_user") as update_m:
+            with mock.patch("mib.dao.utils.Utils.save_profile_picture") as save_m:
+                with mock.patch("mib.dao.utils.Utils.load_profile_picture") as load_m:
+                    update_m.return_value == None
+                    save_m.return_value = 'new_propic.png'
+                    load_m.return_value = ''
+                    resp = test_client.put("/user/1", json=data)
+                    assert resp.json["status"] == "success"
+                    assert resp.status_code == 201
+    
+    def test_update_user_no_birthdate(self,test_client,users):
+
+        data = {
+            "first_name":"Luca",
+            "old_password":"pass"
 
         }
         with mock.patch("mib.dao.user_manager.UserManager.update_user") as m:
@@ -252,12 +294,13 @@ class TestUserServices:
             assert resp.json["status"] == "success"
             assert resp.status_code == 201
     
-    def test_update_user_no_birthdate(self,test_client,users):
+    def test_update_user_no_propic(self,test_client,users):
 
         data = {
-            "first_name":"Luca",
-            "old_password":"pass"
-
+            "first_name":"Giovanni",
+            "old_password":"pass",
+            "new_password":"password34",
+            "birthdate":"01/01/1993",
         }
         with mock.patch("mib.dao.user_manager.UserManager.update_user") as m:
             m.return_value == None

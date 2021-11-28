@@ -1,5 +1,6 @@
 from mib.dao.user_manager import UserManager
 from flask import jsonify
+from mib.dao.utils import Utils
 
 
 def authenticate(auth):
@@ -18,6 +19,7 @@ def authenticate(auth):
     if user and user.authenticate(auth['password']):
         response['authentication'] = 'success'
         response['user'] = user.serialize()
+        response['profile_picture'] = Utils.load_profile_picture(user)
         response_code = 200
 
     return jsonify(response), response_code

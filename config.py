@@ -1,7 +1,10 @@
+import os
+
 class Config(object):
     DEBUG = False
     TESTING = False
 
+    UPLOAD_FOLDER = os.path.join("/static", "assets")
 
 class DebugConfig(Config):
     """

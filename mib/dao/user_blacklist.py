@@ -87,7 +87,6 @@ class UserBlacklist:
         if current_user is None:
             return []
         else:
-
             blocked_users = UserBlacklist._get_blacklist(current_user)
             return UserManager.retrieve_users_list(id_list=list(blocked_users), keep_empty=True)
 

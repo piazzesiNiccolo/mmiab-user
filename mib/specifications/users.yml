@@ -29,6 +29,33 @@ paths:
         default:
           description: Error during creation of the user
 
+  /user/filter_value/{id_usr}:
+    get:
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id_usr
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the user for whom the toggle is returned
+      description: Return the value boolean of the content filter
+      operationId: mib.resources.users.get_users_toggle_content_filter
+      responses:
+        200:
+          description: Return toggle content filter
+          content:
+           application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: boolean
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the toggle
 
   /users_list/{id}:
     get:

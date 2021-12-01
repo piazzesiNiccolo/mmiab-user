@@ -5,7 +5,6 @@ from mib import db
 from typing import List
 
 class UserManager(Manager):
-     
     
     @staticmethod
     def create_user(user: User):
@@ -47,6 +46,12 @@ class UserManager(Manager):
         db_user.update({User.content_filter: new_val})
         db.session.commit()
         return new_val
+
+    @staticmethod
+    def get_toggle_content_filter(id_usr: int):
+        result = db.session.query(User).filter(User.id == id_usr)
+        toggle = result.first().content_filter
+        return toggle
 
     @staticmethod
     def retrieve_users_list(id_list : List[int] = [], keep_empty : bool = False) -> List[User]:

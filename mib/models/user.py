@@ -29,6 +29,15 @@ class User(db.Model):
         'is_anonymous',
     ]
 
+    SERIALIZE_RECPICIENT_LIST = [
+        'id', 
+        'email', 
+        'first_name',
+        'last_name',
+        'nickname',
+        'phone',
+    ]
+
     # All fields of user
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
@@ -92,6 +101,10 @@ class User(db.Model):
     def serialize(self):
         _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
         _dict['birthdate'] = self.birthdate.strftime('%d/%m/%Y')
+        return _dict
+
+    def serialize_recipient(self):
+        _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
         return _dict
 
     def check_password(self, password):

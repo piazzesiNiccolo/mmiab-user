@@ -14,16 +14,28 @@ class UserManager(Manager):
     @staticmethod
     def retrieve_by_id(id_, notme=0):
         Manager.check_none(id=id_)
-        return User.query.filter(User.id == id_, User.id != notme).first()
+        return User.query.filter(
+            User.id == id_, 
+            User.id != notme,
+            User.is_banned == False,
+        ).first()
 
     @staticmethod
     def retrieve_by_email(email, notme=0):
-        return User.query.filter(User.email == email, User.id != notme).first()
+        return User.query.filter(
+            User.email == email, 
+            User.id != notme,
+            User.is_banned == False,
+        ).first()
     
     @staticmethod
     def retrieve_by_phone(phone, notme=0):
         Manager.check_none(phone=phone)
-        return User.query.filter(User.phone == phone, User.id != notme).first()
+        return User.query.filter(
+            User.phone == phone, 
+            User.id != notme,
+            User.is_banned == False,
+        ).first()
 
     @staticmethod
     def update_user(user: User):
@@ -39,24 +51,21 @@ class UserManager(Manager):
         UserManager.delete_user(user)
 
     @staticmethod
-    def set_content_filter(id_: int):
-        db_user = db.session.query(User).filter(User.id == id_)
-        if db_user.count() == 0:
-            return -1
-        new_val = not db_user.first().content_filter
-        db_user.update({User.content_filter: new_val})
+    def set_content_filter(db_user: User):
+        new_val = not db_user.content_filter
+        db_user.content_filter = new_val
         db.session.commit()
         return new_val
 
     @staticmethod
     def retrieve_users_list(id_list : List[int] = [], keep_empty : bool = False) -> List[User]:
         if len(id_list) == 0:
-            if keep_empty:
-                return []
-            else:
-                return User.query.all()
+            return [] if keep_empty else User.query.all()
         else:
-            return User.query.filter(User.id.in_(id_list)).all()
+            return User.query.filter(
+                User.id.in_(id_list), 
+                User.is_banned == False,
+            ).all()
 
     @staticmethod
     def filter_users_by_keyword(users: List[User], key_word: str) -> List[User]:

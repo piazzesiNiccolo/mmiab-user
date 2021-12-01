@@ -110,25 +110,25 @@ def delete_user(user_id):
         return jsonify(response_object), 202
 
 def toggle_content_filter(id: int):
-        """
-        It enables the content filter option for a user if disabled
-        and viceversa.
-        """
-        filter = UserManager.set_content_filter(id)
-        
-        if filter == -1:
-            response_object = {
-            'status': 'failed',
-            'Message': "User not found",
-            }
-            return jsonify(response_object), 404
-        else:
-            response_object = {
+    """
+    It enables the content filter option for a user if disabled
+    and viceversa.
+    """
+    user = UserManager.retrieve_by_id(id)
+    if user is None:
+        response_object = {
+            'status': "failed",
+            "message":"User not found"
+        }
+        return jsonify(response_object),404
+    else:
+        filter = UserManager.set_content_filter(user)
+        response_object = {
                 'status': 'Success',
                 'Message': "Content filter status changed",
                 'Value': filter,
-                }
-            return jsonify(response_object), 200
+            }
+        return jsonify(response_object), 200
 
 
 
@@ -170,6 +170,31 @@ def get_blacklist(id):
             'profile_pictures': [Utils.load_profile_picture(user) for user in filtered_users],
         }
         return jsonify(response_object), 200 
+
+def get_recipients(id_sender):
+    if UserManager.retrieve_by_id(id_sender) is None:
+        response_object = {
+            "status":"failed",
+            "message":"not found"
+        }
+        return jsonify(response_object),404
+    else:
+        ids = request.args.get('ids', default=None)
+        key_word = request.args.get('q',default=None)
+
+        users = UserManager.retrieve_users_list(
+            id_list=[] if ids is None else ids,
+            keep_empty=ids is not None,
+        )
+        valid_users = UserBlacklist.filter_blacklist(id_sender, users)
+        filtered_users = UserManager.filter_users_by_keyword(valid_users, key_word)
+
+        response_object = {
+            'status': 'success',
+            'users': [user.serialize_recipient() for user in filtered_users],
+        }
+        return jsonify(response_object), 200
+
 
 def add_to_blacklist(blocking, blocked):
     code, message = UserBlacklist.add_user_to_blacklist(blocking, blocked)

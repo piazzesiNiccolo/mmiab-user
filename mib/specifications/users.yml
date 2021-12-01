@@ -63,6 +63,49 @@ paths:
         default:
           description: An error occured during retrieving the user
 
+  /recipients/{id}:
+    get:
+      tags: [Users]
+      parameters:
+        - in: query
+          name: ids
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: return recipients identified by ids in this array
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: search recipients with the keyword specified
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the sender of the message for which the recipients are being retrieved
+      description: Gets the list of all recipients identified by array ids (if present) filtered by query q
+      operationId: mib.resources.users.get_recipients
+      responses:
+        200:
+          description: Return recipients list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recipients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Recipient'
+        404:
+          description: Sender id not found
+        default:
+          description: An error occured during retrieving the user
+
   /blacklist/{id}:
     get:
       tags: [Users]
@@ -484,3 +527,30 @@ components:
           example: '+39 3332222384'
           minLength: 10
           maxLength: 25
+
+    Recipient:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User id
+        first_name:
+          type: string
+          description: First name of user
+        last_name:
+          type: string
+          description: Last name of user
+        nickname:
+          type: string
+          description: Nickname of user
+        email:
+          type: string
+          format: email
+          description: User email
+        phone:
+          type: string
+          description: User phone number
+          minLength: 10
+          maxLength: 25
+

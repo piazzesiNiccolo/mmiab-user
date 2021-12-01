@@ -103,7 +103,7 @@ class User(db.Model):
         _dict['birthdate'] = self.birthdate.strftime('%d/%m/%Y')
         return _dict
 
-    def serialize_recipient(self):
+    def serialize_display(self):
         _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
         return _dict
 

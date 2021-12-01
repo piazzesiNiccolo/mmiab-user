@@ -52,10 +52,14 @@ class UserManager(Manager):
 
     @staticmethod
     def set_content_filter(db_user: User):
-        new_val = not db_user.content_filter
-        db_user.content_filter = new_val
-        db.session.commit()
-        return new_val
+        if db_user is not None:
+            print(db_user)
+            new_val = not db_user.content_filter
+            db_user.content_filter = new_val
+            db.session.commit()
+            return new_val
+
+        return False
 
     @staticmethod
     def retrieve_users_list(id_list : List[int] = [], keep_empty : bool = False) -> List[User]:

@@ -68,14 +68,6 @@ paths:
       tags: [Users]
       parameters:
         - in: query
-          name: ids
-          schema:
-            type: array
-            items:
-              type: integer
-              format: int64
-          description: return recipients identified by ids in this array
-        - in: query
           name: q
           schema:
             type: string
@@ -100,9 +92,38 @@ paths:
                   recipients:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Recipient'
+                      $ref: '#/components/schemas/UserDisplay'
         404:
           description: Sender id not found
+        default:
+          description: An error occured during retrieving the user
+
+  /users/display_info:
+    get:
+      tags: [Users]
+      parameters:
+        - in: query
+          name: ids
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: return recipients identified by ids in this array
+      description: Gets the list of all recipients identified by array ids (if present) filtered by query q
+      operationId: mib.resources.users.get_users_display_info
+      responses:
+        200:
+          description: Return recipients list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recipients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserDisplay'
         default:
           description: An error occured during retrieving the user
 
@@ -528,7 +549,7 @@ components:
           minLength: 10
           maxLength: 25
 
-    Recipient:
+    UserDisplay:
       type: object
       properties:
         id:

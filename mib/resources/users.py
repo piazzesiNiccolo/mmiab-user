@@ -124,9 +124,9 @@ def toggle_content_filter(id: int):
     else:
         filter = UserManager.set_content_filter(user)
         response_object = {
-                'status': 'Success',
-                'Message': "Content filter status changed",
-                'Value': filter,
+                'status': 'success',
+                'message': "Content filter status changed",
+                'value': filter,
             }
         return jsonify(response_object), 200
 
@@ -179,22 +179,31 @@ def get_recipients(id_sender):
         }
         return jsonify(response_object),404
     else:
-        ids = request.args.get('ids', default=None)
         key_word = request.args.get('q',default=None)
 
-        users = UserManager.retrieve_users_list(
-            id_list=[] if ids is None else ids,
-            keep_empty=ids is not None,
-        )
+        users = UserManager.retrieve_users_list()
         valid_users = UserBlacklist.filter_blacklist(id_sender, users)
         filtered_users = UserManager.filter_users_by_keyword(valid_users, key_word)
 
         response_object = {
             'status': 'success',
-            'users': [user.serialize_recipient() for user in filtered_users],
+            'users': [user.serialize_display() for user in filtered_users],
         }
         return jsonify(response_object), 200
 
+def get_users_display_info():
+    ids = request.args.get('ids', default=[])
+
+    users = UserManager.retrieve_users_list(
+        id_list=[] if ids is None else ids,
+        keep_empty=True,
+    )
+
+    response_object = {
+        'status': 'success',
+        'users': [user.serialize_display() for user in users],
+    }
+    return jsonify(response_object), 200
 
 def add_to_blacklist(blocking, blocked):
     code, message = UserBlacklist.add_user_to_blacklist(blocking, blocked)

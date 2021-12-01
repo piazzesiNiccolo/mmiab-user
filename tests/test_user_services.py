@@ -135,15 +135,15 @@ class TestUserServices:
             assert resp.status_code == 404
   
     @pytest.mark.parametrize("filter_val,code, status, value",[
-        (True, 200, "Success", True),
-        (False,200, "Success", False)]
+        (True, 200, "success", True),
+        (False,200, "success", False)]
         )
-    def test_enable_filter_toggle_on(self, test_client, filter_val, code, status, value):
+    def test_enable_filter_toggle_on(self, test_client, filter_val, code, status, value, users):
         with mock.patch('mib.dao.user_manager.UserManager.set_content_filter') as m:
             m.return_value = filter_val
             resp = test_client.get("/content_filter/1")
             assert resp.json["status"] == status
-            assert resp.json["Value"] == value
+            assert resp.json["value"] == value
             assert resp.status_code == code
     
     

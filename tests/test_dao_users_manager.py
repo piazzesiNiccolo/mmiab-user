@@ -89,14 +89,14 @@ class TestUserManager:
         assert User.query.get(1) is None
     
     def test_set_content_filter_user_not_exists(self):
-        cf = UserManager.set_content_filter(1)
-        assert cf == -1
+        cf = UserManager.set_content_filter(None)
+        assert cf == False
     
     @pytest.mark.parametrize("cf_value", [True, False])
     def test_set_content_filter(self, users, cf_value):
-        usr = users[0]
+        usr, _ = users
         usr.content_filter = cf_value
-        UserManager.set_content_filter(1)
+        UserManager.set_content_filter(usr)
         assert not usr.content_filter ==  cf_value
     
     @pytest.mark.parametrize("choice, length",[

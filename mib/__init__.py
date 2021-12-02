@@ -52,6 +52,10 @@ def create_app():
     else:
         raise RuntimeError(
             "%s is not recognized as valid app environment. You have to setup the environment!" % flask_env)
+    import mib.events as events
+    events.disabled = flask_env != 'production'
+    if not events.disabled:
+        events.init_rabbit_mq(app)
 
     # Load config
     env = Environments(app)

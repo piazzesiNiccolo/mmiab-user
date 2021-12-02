@@ -1,7 +1,8 @@
 from mib.dao.manager import Manager
 from mib.models.user import User
 from mib import db
-
+from mib.events.handler import EventHandler
+from mib.events.event import user_delete_event
 from typing import List
 
 class UserManager(Manager):
@@ -43,7 +44,9 @@ class UserManager(Manager):
 
     @staticmethod
     def delete_user(user: User):
+        id = user.id
         Manager.delete(user=user)
+        EventHandler.send_event(user_delete_event(id))
 
     @staticmethod
     def delete_user_by_id(id_: int):

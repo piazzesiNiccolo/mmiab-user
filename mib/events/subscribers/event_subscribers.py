@@ -17,7 +17,7 @@ class LotteryPointsUpdater(ConsumerMixin):
             channel=connection.channel()
         )
         exchange.declare()
-        self.queues = [Queue("LotteryUpdateQueue",exchange,routing_key="LOTTERY_UPDATE")]
+        self.queues = [Queue("LotteryUpdateQueue",exchange,routing_key="POINTS_UPDATE")]
     
     def on_message(self, body, message):
         obj = None

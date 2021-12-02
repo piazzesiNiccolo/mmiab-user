@@ -31,7 +31,6 @@ class LotteryPointsUpdater(ConsumerMixin):
             if 'winners' not in obj:
                 self.logger.error('Message does not contain winners key!')
             else:
-            # send ack to message
                 for id,points in obj["winners"].items():
                     user = UserManager.retrieve_by_id(id)
                     user.lottery_points += points

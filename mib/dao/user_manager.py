@@ -44,7 +44,8 @@ class UserManager(Manager):
 
     @staticmethod
     def delete_user(user: User):
-        id = user.id
+        if user:
+            id = user.id
         Manager.delete(user=user)
         EventHandler.send_event(user_delete_event(id))
 

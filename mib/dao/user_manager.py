@@ -62,6 +62,12 @@ class UserManager(Manager):
         return False
 
     @staticmethod
+    def get_toggle_content_filter(id_usr: int):
+        result = db.session.query(User).filter(User.id == id_usr)
+        toggle = result.first().content_filter
+        return toggle
+
+    @staticmethod
     def retrieve_users_list(id_list : List[int] = [], keep_empty : bool = False) -> List[User]:
         if len(id_list) == 0:
             return [] if keep_empty else User.query.all()

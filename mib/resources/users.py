@@ -130,7 +130,21 @@ def toggle_content_filter(id: int):
             }
         return jsonify(response_object), 200
 
+def get_users_toggle_content_filter(id_usr):
 
+    toggle = UserManager.get_toggle_content_filter(id_usr)
+    if toggle is None:
+        response_object = {
+                "status":"failed",
+                "message":"not found"
+            }
+        return jsonify(response_object),404
+    else:
+        response_object = {
+                "status":"success",
+                "toggle":toggle
+            }
+        return jsonify(response_object),200
 
 def get_users_list(id):
     if UserManager.retrieve_by_id(id) is None:

@@ -31,6 +31,7 @@ def create_app():
     global app
     global migrate
     global api_app
+    global redis_client
 
     # first initialize the logger
     init_logger()
@@ -68,7 +69,7 @@ def create_app():
 
     # creating migrate
     migrate = Migrate(app=app, db=db)
-    get_redis(app)
+    redis_client = get_redis(app)
     init_logger()
     db.create_all(app=app)
 

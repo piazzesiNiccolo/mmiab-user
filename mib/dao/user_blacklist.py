@@ -1,10 +1,11 @@
-from mib import db
 from typing import List
-from typing import Tuple
 from typing import Set
+from typing import Tuple
 
-from mib.models.user import User
+from mib import db
 from mib.dao.user_manager import UserManager
+from mib.models.user import User
+
 
 class UserBlacklist:
 
@@ -88,7 +89,9 @@ class UserBlacklist:
             return []
         else:
             blocked_users = UserBlacklist._get_blacklist(current_user)
-            return UserManager.retrieve_users_list(id_list=list(blocked_users), keep_empty=True)
+            return UserManager.retrieve_users_list(
+                id_list=list(blocked_users), keep_empty=True
+            )
 
     @staticmethod
     def is_user_blocked(current_id: int, other_id: int) -> bool:
@@ -99,4 +102,3 @@ class UserBlacklist:
         if current_user is None:
             return False
         return other_id in UserBlacklist._get_blacklist(current_user)
-

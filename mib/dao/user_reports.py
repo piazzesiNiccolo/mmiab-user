@@ -1,8 +1,11 @@
-from mib import db 
-from mib.dao.user_manager import UserManager
-from mib.models.user import User 
-from mib.models.report import Report
 import datetime
+
+from mib import db
+from mib.dao.user_manager import UserManager
+from mib.models.report import Report
+from mib.models.user import User
+
+
 class UserReport:
     """
     Wrapper class  for all db operations involving report
@@ -17,9 +20,7 @@ class UserReport:
         elif UserManager.retrieve_by_id(id_signaller) is None:
             return 404, "User not found"
         # check if the signaller has already report the user
-        elif (
-            UserReport.is_user_reported(id_signaller,id_reported)
-        ):
+        elif UserReport.is_user_reported(id_signaller, id_reported):
             return 200, "You have already reported this user"
         else:
             # add into the database the new Report

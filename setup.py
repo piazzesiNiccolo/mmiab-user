@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-
 import ast
 import re
 
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 _version_re = re.compile(r"__version__\s+=\s+(.*)")
 
@@ -23,5 +23,5 @@ setup(
     include_package_data=True,
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
-    zip_safe=False
+    zip_safe=False,
 )

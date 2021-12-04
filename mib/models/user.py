@@ -1,4 +1,5 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
 from mib import db
 
@@ -7,35 +8,35 @@ class User(db.Model):
     """Representation of User model."""
 
     # The name of the table that we explicitly set
-    __tablename__ = 'User'
+    __tablename__ = "User"
 
     # A list of fields to be serialized
     SERIALIZE_LIST = [
-        'id', 
-        'email', 
-        'first_name',
-        'last_name',
-        'nickname',
-        'location',
-        'birthdate',
-        'phone',
-        'pfp_path',
-        'content_filter',
-        'blacklist',
-        'lottery_points',
-        'is_banned',
-        'is_active', 
-        'authenticated', 
-        'is_anonymous',
+        "id",
+        "email",
+        "first_name",
+        "last_name",
+        "nickname",
+        "location",
+        "birthdate",
+        "phone",
+        "pfp_path",
+        "content_filter",
+        "blacklist",
+        "lottery_points",
+        "is_banned",
+        "is_active",
+        "authenticated",
+        "is_anonymous",
     ]
 
     SERIALIZE_RECPICIENT_LIST = [
-        'id', 
-        'email', 
-        'first_name',
-        'last_name',
-        'nickname',
-        'phone',
+        "id",
+        "email",
+        "first_name",
+        "last_name",
+        "nickname",
+        "phone",
     ]
 
     # All fields of user
@@ -75,13 +76,13 @@ class User(db.Model):
         self.last_name = name
 
     def set_nickname(self, name):
-        self.nickname = None if name == '' else name
+        self.nickname = None if name == "" else name
 
     def set_location(self, location):
-        self.location = None if location == '' else location
+        self.location = None if location == "" else location
 
     def set_pfp_path(self, path):
-        if path != '':
+        if path != "":
             self.pfp_path = path
 
     def is_authenticated(self):
@@ -100,7 +101,7 @@ class User(db.Model):
 
     def serialize(self):
         _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
-        _dict['birthdate'] = self.birthdate.strftime('%d/%m/%Y')
+        _dict["birthdate"] = self.birthdate.strftime("%d/%m/%Y")
         return _dict
 
     def serialize_display(self):
@@ -109,6 +110,3 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
-
-
-

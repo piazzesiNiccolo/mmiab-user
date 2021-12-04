@@ -1,4 +1,5 @@
-from mib import db 
+from mib import db
+
 
 class Report(db.Model):
 

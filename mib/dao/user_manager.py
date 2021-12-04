@@ -1,14 +1,13 @@
 import json
+from typing import List
+
+from mib import db
 from mib.dao.manager import Manager
 from mib.events.publishers import EventPublishers
 from mib.models.user import User
-from mib import db
 
-from typing import List
 
 class UserManager(Manager):
-     
-    
     @staticmethod
     def create_user(user: User):
         Manager.create(user=user)
@@ -17,7 +16,7 @@ class UserManager(Manager):
     def retrieve_by_id(id_, notme=0):
         Manager.check_none(id=id_)
         return User.query.filter(
-            User.id == id_, 
+            User.id == id_,
             User.id != notme,
             User.is_banned == False,
         ).first()
@@ -25,16 +24,16 @@ class UserManager(Manager):
     @staticmethod
     def retrieve_by_email(email, notme=0):
         return User.query.filter(
-            User.email == email, 
+            User.email == email,
             User.id != notme,
             User.is_banned == False,
         ).first()
-    
+
     @staticmethod
     def retrieve_by_phone(phone, notme=0):
         Manager.check_none(phone=phone)
         return User.query.filter(
-            User.phone == phone, 
+            User.phone == phone,
             User.id != notme,
             User.is_banned == False,
         ).first()
@@ -46,10 +45,9 @@ class UserManager(Manager):
     @staticmethod
     def delete_user(user: User):
         if user:
-            msg = json.dumps({"user_id":user.id})
+            msg = json.dumps({"user_id": user.id})
         Manager.delete(user=user)
         EventPublishers.publish_user_delete(msg)
-
 
     @staticmethod
     def delete_user_by_id(id_: int):
@@ -73,12 +71,14 @@ class UserManager(Manager):
         return toggle
 
     @staticmethod
-    def retrieve_users_list(id_list : List[int] = [], keep_empty : bool = False) -> List[User]:
+    def retrieve_users_list(
+        id_list: List[int] = [], keep_empty: bool = False
+    ) -> List[User]:
         if len(id_list) == 0:
             return [] if keep_empty else User.query.all()
         else:
             return User.query.filter(
-                User.id.in_(id_list), 
+                User.id.in_(id_list),
                 User.is_banned == False,
             ).all()
 
@@ -101,4 +101,3 @@ class UserManager(Manager):
 
         filtered_users = list(filter(filter_users, users))
         return filtered_users if len(filtered_users) > 0 else users
-

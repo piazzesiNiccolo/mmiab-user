@@ -23,7 +23,7 @@ services:
       build:
         context: .
         dockerfile: Dockerfile 
-
+  
     ports:
      - "5000:5000"
     env_file:
@@ -33,7 +33,28 @@ services:
     depends_on:
       - db
       - migrations
+  users-bg:
+      depends_on:
+        - celery
+        - lottery
+        - db
+        - migrations
+      build: .
+      env_file:
+        - env_file
+      environment:
+        - POSTGRES_HOST=db
+        - REDIS_HOST=redis
+      command: python3 -u subscribers.py
+      links:
+        - redis
 
+  redis:
+    image: "redis:alpine"
+    container_name: rd01
+    command: --port 6379
+    ports:
+      - "6379:6379"
   migrations:
     #
     # this service is used to apply migrations on db

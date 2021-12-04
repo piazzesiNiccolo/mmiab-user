@@ -46,8 +46,9 @@ class UserManager(Manager):
     def delete_user(user: User):
         if user:
             msg = json.dumps({"user_id": user.id})
+            EventPublishers.publish_user_delete(msg)
+
         Manager.delete(user=user)
-        EventPublishers.publish_user_delete(msg)
 
     @staticmethod
     def delete_user_by_id(id_: int):

@@ -601,4 +601,9 @@ components:
           description: User phone number
           minLength: 10
           maxLength: 25
+        lottery_points:
+          type: integer
+          format: int64
+          description: Lottery points of the user
+
 

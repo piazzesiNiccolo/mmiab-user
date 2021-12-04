@@ -30,13 +30,14 @@ class User(db.Model):
         "is_anonymous",
     ]
 
-    SERIALIZE_RECPICIENT_LIST = [
+    SERIALIZE_DISPLAY_LIST = [
         "id",
         "email",
         "first_name",
         "last_name",
         "nickname",
         "phone",
+        "lottery_points",
     ]
 
     # All fields of user
@@ -105,7 +106,7 @@ class User(db.Model):
         return _dict
 
     def serialize_display(self):
-        _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+        _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_DISPLAY_LIST])
         return _dict
 
     def check_password(self, password):

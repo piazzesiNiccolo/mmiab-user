@@ -5,6 +5,9 @@ class Config(object):
     TESTING = False
 
     UPLOAD_FOLDER = os.path.join("/static", "assets")
+    REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+    REDIS_PORT = os.getenv("REDIS_PORT", 6379)
+    REDIS_DB = os.getenv("REDIS_DB", 0)
 
 class DebugConfig(Config):
     """

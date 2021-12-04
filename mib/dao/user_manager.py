@@ -1,4 +1,6 @@
+import json
 from mib.dao.manager import Manager
+from mib.events.publishers import EventPublishers
 from mib.models.user import User
 from mib import db
 
@@ -43,7 +45,11 @@ class UserManager(Manager):
 
     @staticmethod
     def delete_user(user: User):
+        if user:
+            msg = json.dumps({"user_id":user.id})
         Manager.delete(user=user)
+        EventPublishers.publish_user_delete(msg)
+
 
     @staticmethod
     def delete_user_by_id(id_: int):
@@ -53,7 +59,6 @@ class UserManager(Manager):
     @staticmethod
     def set_content_filter(db_user: User):
         if db_user is not None:
-            print(db_user)
             new_val = not db_user.content_filter
             db_user.content_filter = new_val
             db.session.commit()

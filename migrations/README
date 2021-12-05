@@ -1,10 +1,1 @@
-Generic single-database configuration.
-
-To generate a new version run 
-
-    export FLASK_ENV=development
-    flask db revision
-
-When a new revision is created it is inserted in migrations/versions and must be modified to apply required changes.
-
-When the migrations container starts it runs flask db upgrade, so all versions contained in migrations/versions will be applied in order.
+Single-database configuration for Flask.

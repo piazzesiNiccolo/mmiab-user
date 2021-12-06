@@ -191,15 +191,16 @@ def get_blacklist(id):
         return jsonify(response_object), 200
 
 
-def get_recipients(id_sender):
-    if UserManager.retrieve_by_id(id_sender) is None:
+def get_recipients(id):
+    if UserManager.retrieve_by_id(id) is None:
         response_object = {"status": "failed", "message": "not found"}
         return jsonify(response_object), 404
     else:
         key_word = request.args.get("q", default=None)
 
         users = UserManager.retrieve_users_list()
-        valid_users = UserBlacklist.filter_blacklist(id_sender, users)
+        users = [u for u in users if u.id != id]
+        valid_users = UserBlacklist.filter_blacklist(id, users)
         filtered_users = UserManager.filter_users_by_keyword(valid_users, key_word)
 
         response_object = {

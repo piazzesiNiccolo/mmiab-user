@@ -143,6 +143,32 @@ class TestUserServices:
             assert resp.status_code == code
 
     @pytest.mark.parametrize(
+        "filter,code, mess",
+        [(None, 404, "failed"), (True, 200, "success"), (False, 200, "success")],
+    )
+    def test_get_content_filter(self, test_client, filter, code, mess):
+        with mock.patch(
+            "mib.dao.user_manager.UserManager.get_toggle_content_filter"
+        ) as m:
+            m.return_value = filter
+            resp = test_client.get("/user/filter_value/1")
+            assert resp.status_code == code
+            assert resp.json["status"] == mess
+
+    @pytest.mark.parametrize(
+        "user, code, status", [(1, 200, "success"), (10, 404, "failed")]
+    )
+    def test_get_recipients(self, test_client, users, user, code, status):
+        resp = test_client.get(f"/recipients/{user}")
+        assert resp.status_code == code
+        assert resp.json["status"] == status
+
+    def test_get_display_info(self, test_client, users):
+        resp = test_client.get("/users/display_info?ids=1,2")
+        assert resp.status_code == 200
+        assert len(resp.json["users"]) == 2
+
+    @pytest.mark.parametrize(
         "add_ret_code,add_ret_mess, expected_mess,expected_code",
         [
             (403, "Users cannot block themselves", "failed", 403),

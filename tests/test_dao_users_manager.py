@@ -90,6 +90,9 @@ class TestUserManager:
         UserManager.delete_user_by_id(1)
         assert User.query.get(1) is None
 
+    def test_get_content_filter(self, users):
+        assert not UserManager.get_toggle_content_filter(1)
+
     def test_set_content_filter_user_not_exists(self):
         cf = UserManager.set_content_filter(None)
         assert cf == False

@@ -1,4 +1,5 @@
-# Message in A Bottle - users
+Message in A Bottle - users
+
 [![Build Status](https://app.travis-ci.com/Team6ASE2021/mmiab-user.svg?token=5PqFNKuWwdmknapJspK9&branch=main)](https://app.travis-ci.com/Team6ASE2021/mmiab-user)
 
 [![codecov](https://codecov.io/gh/Team6ASE2021/mmiab-user/branch/main/graph/badge.svg?token=K8QPGGVUY1)](https://codecov.io/gh/Team6ASE2021/mmiab-user)
@@ -9,18 +10,19 @@ University of Pisa.
 
 ## Team info
 
-- The *squad id* is **<SQUAD_ID>**
-- The *team leader* is *<TEAM_LEADER>*
+- The *squad id* is **6**
+- The *team leader* is *Lorenzo Volpi*
 
 #### Members
 
 Mark with *bold* the person(s) that has developed this microservice.
 
-|Name and Surname    | Email                         |
-|--------------------|-------------------------------|
-|*Mario Rossi*       |mario.rossi@unipi.it           |
-|Antonio Lupo        |antonio.lupo@unipi.it          |
-|*Susanna Lopez*     |susy.lopez@mit.edu             |
+| Name and Surname   | Email                        |
+| ------------------ | ---------------------------- |
+| *Niccolò Piazzesi* | n.piazzesi@studenti.unipi.it |
+| *Lorenzo Volpi*    | l.volpi7@studenti.unipi.it   |
+| *Paolo Lanza*      | p.lanza1@studenti.unipi.it   |
+| *Davide Morucci*   | d.morucci@studenti.unipi.it  |
 
 
 ## Instructions

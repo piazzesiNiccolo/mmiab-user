@@ -38,7 +38,6 @@ class UserBlacklist:
         if current_id == other_id:
             return 403, "Users cannot block themselves"
         current_user = UserManager.retrieve_by_id(current_id)
-        print(current_user)
         if current_user is None:
             return 404, "Blocking user not found"
         if UserManager.retrieve_by_id(other_id) is None:
@@ -47,7 +46,6 @@ class UserBlacklist:
         code, message = 201, "User added to blacklist"
 
         blocked_users = UserBlacklist._get_blacklist(current_user)
-        print(blocked_users, other_id)
         if other_id in blocked_users:
             code, message = 200, "User already in blacklist"
         blocked_users.add(other_id)

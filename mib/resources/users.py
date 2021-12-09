@@ -214,7 +214,6 @@ def get_users_display_info():
     ids = request.args.get("ids", default='')
 
     ids_int = [int(id) for id in ids.split(',')]
-    print(ids_int)
     users = UserManager.retrieve_users_list(
         id_list=ids_int,
         keep_empty=True,
@@ -251,7 +250,6 @@ def report(id_reporter: int, id_reported: int):
         "status": "success" if code == 201 else "failed",
         "message": message,
     }
-    print(response)
     return jsonify(response), code
 
 
@@ -308,7 +306,6 @@ def update_user(user_id):
         user.set_password(new_password)
 
     propic = data.get("profile_picture")
-    print(propic)
     if propic == "" or not propic:
         file_name = ""
     else:

@@ -2,6 +2,7 @@ from mib import db
 
 
 class Report(db.Model):
+    """Representation of Report model."""
 
     __tablename__ = "Report"
 

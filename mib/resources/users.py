@@ -109,7 +109,7 @@ def delete_user(user_id):
     :param user_id the id of user to be deleted
     :return json response
     """
-    if UserManager.retrieve_by_id(id) is None:
+    if UserManager.retrieve_by_id(user_id) is None:
         response_object = {"status": "failed", "message": "User not found"}
         return jsonify(response_object), 404
     else:

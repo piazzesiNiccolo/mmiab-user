@@ -106,7 +106,9 @@ class User(db.Model):
         return _dict
 
     def serialize_display(self):
-        _dict = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_DISPLAY_LIST])
+        _dict = dict(
+            [(k, self.__getattribute__(k)) for k in self.SERIALIZE_DISPLAY_LIST]
+        )
         return _dict
 
     def check_password(self, password):

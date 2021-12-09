@@ -211,9 +211,9 @@ def get_recipients(id):
 
 
 def get_users_display_info():
-    ids = request.args.get("ids", default='')
+    ids = request.args.get("ids", default="")
 
-    ids_int = [int(id) for id in ids.split(',')]
+    ids_int = [int(id) for id in ids.split(",")]
     users = UserManager.retrieve_users_list(
         id_list=ids_int,
         keep_empty=True,

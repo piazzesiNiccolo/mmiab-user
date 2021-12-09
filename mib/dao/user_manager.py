@@ -7,6 +7,10 @@ from mib.models.user import User
 
 
 class UserManager(Manager):
+    """
+    Wrapper class  for all db operations involving user
+    """
+
     @staticmethod
     def create_user(user: User):
         Manager.create(user=user)

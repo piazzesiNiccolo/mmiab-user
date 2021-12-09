@@ -8,6 +8,9 @@ from mib.models.user import User
 
 
 class UserBlacklist:
+    """
+    Wrapper class  for all db operations involving blacklist
+    """
 
     __separator = "|"
 
